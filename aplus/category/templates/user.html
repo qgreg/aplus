@@ -1,0 +1,94 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<div class="container">
+    <div class = 'flash'>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li> <strong> {{ message }} </strong> </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="row">
+        <!-- User information tile -->
+        <div class="col-md-4 text-center">
+            <div class="category-card">
+                <div class="category-boxtop"></div>
+                {% if user.picture != "" %}
+                    <div class="category-picture">
+                        <img src="{{user.picture}}" width="110px">
+                    </div>
+                {% endif %}
+                <div class="info">
+                    <div class="title">
+                        <h1>{{user.name}}</h1>
+                    </div>
+                </div>
+                <div class="description">
+                    {{user.email}}
+                </div>
+            </div>
+            <!-- if admin, change admin role-->
+            {% if editUser %}
+                <!-- if admin, show revoke admin role. Otherwise show set admin role-->
+                {% if user.admin %}
+                    <form action="{{ url_for('category.changeAdmin', users_id=user.id) }}", method = 'post'>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="admin" value=False />
+                        <button type="submit" class="btn btn-default delete" id="submit" type="submit">     Revoke Admin Role
+                        </button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('category.changeAdmin', users_id=user.id) }}", method = 'post'>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="admin" value=True />
+                        <button type="submit" class="btn btn-default delete" id="submit" type="submit">     Set Admin Role
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+            <div class="category-boxtop"></div> 
+        </div>		
+
+        <!-- List of user created categories-->
+        <div class="col-md-4">
+            <h2>Categories
+                <a href="{{url_for('category.addCategory')}}">
+                    <button class="btn btn-default" id="new-category">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </a>
+            </h2>
+            {% for category in categories %}
+                <p>
+                    <a href = "{{url_for('category.showCategory', name=category.name)}}">
+                        {{category.name}}
+                    </a>
+                </p>
+            {% endfor %}
+        </div>
+        <!-- User list available to admins-->
+        {% if editUser %}
+            <div class="col-md-4">
+                <h2>Users</h2>
+                {% for usr in userslist %}
+                    <p>
+                        <a href = "{{url_for('category.showUser', users_id=usr.id)}}">
+                        {{usr.name}} - {{usr.email}}
+                        </a>
+                    </p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+         
+{% endblock %}
