@@ -24,8 +24,8 @@ def create_app(config_filename):
     db.init_app(app)
 
     # Register the login blueprint that manages user Google and Facebook logins
-    #from itemcatalog.login.views import login_blueprint
-    #app.register_blueprint(login_blueprint)
+    from aplus.api.views import api
+    app.register_blueprint(api)
 
     # Register the category blueprint that manages category and item CRUD
     #from itemcatalog.category.views import category
