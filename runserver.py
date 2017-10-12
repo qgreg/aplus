@@ -1,4 +1,4 @@
-from itemcatalog.createapp import create_app
+from aplus.createapp import create_app
 
 # Create the app using the configuration
 app = create_app('config.py')
