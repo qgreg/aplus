@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-    padding-top: 70px;
+    padding-top: 0px;
 }
 
 #signInLink, #signOutLink {
@@ -104,3 +104,17 @@ ul#conferences-list {
 .section-a {
     padding: 50px 0;
 }
+
+#logo {
+    width: 40%;
+    float: left;
+}
+
+#logo h1 a {
+  display: block;
+  text-indent: -9999px;
+  background: url("/static/img/logo_aplus_lg.png") no-repeat;
+  width: 403px;
+  height: 85px;
+}
+
