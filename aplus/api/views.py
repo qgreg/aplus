@@ -4,7 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import DatabaseError
 
 
-from models import db, PSSA
+from aplus.models import db, PSSA
 
 import random
 import string
@@ -15,7 +15,7 @@ import re
 api = Blueprint('api', __name__, template_folder="templates")
 
 
-@category.route('/')
+@api.route('/')
 def index():
     """Prep category and item data then render the home page.
 
@@ -24,12 +24,27 @@ def index():
     return render_template('index.html')
 
 
-@category.route('/category/JSON')
-def categoriesJSON():
+@api.route('/api/2016/ELA/Phillips')
+def apiPSSA():
+    return jsonify(
+        year=2016,
+        school='Phillips',
+        subject='ELA',
+        grade='3rd',
+        subset='All',
+        total_tested=45,
+        below_basic=0.067,
+        basic=0.356,
+        proficient=0.467,
+        advanced=0.111)
+
+
+#@api.route('/category/JSON')
+#def categoriesJSON():
     """API for all categories.
 
     Returns: JSON for all categories.
     """
-    categories = Category.query.all()
-    return jsonify(CAtegory=[i.serialize for i in categories])
+    # categories = Category.query.all()
+    #return jsonify(Category=[i.serialize for i in categories])
 

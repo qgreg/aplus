@@ -1,8 +1,4 @@
 from flask import Flask
-from flask_wtf.csrf import CsrfProtect
-
-# Get ready to load CSRF protection
-csrf = CsrfProtect()
 
 
 def create_app(config_filename):
@@ -26,13 +22,5 @@ def create_app(config_filename):
     # Register the login blueprint that manages user Google and Facebook logins
     from aplus.api.views import api
     app.register_blueprint(api)
-
-    # Register the category blueprint that manages category and item CRUD
-    #from itemcatalog.category.views import category
-    #app.register_blueprint(category)
-
-    # Establish CSRF protection but exempt the login blueprint
-    csrf.init_app(app)
-    # csrf.exempt(login_blueprint)
 
     return app
