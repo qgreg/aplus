@@ -6,13 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Conference Central</title>
+    <title>A Plus Schools</title>
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-cosmo.css">
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/offcanvas.css">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-cosmo.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/aplus.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/main.css') }}">
+    <link rel="stylesheet" href="/static/bootstrap/css/offcanvas.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
     <meta property="og:title" content="Conference Central">
     <meta property="og:type" content="website">
     <meta property="og:description" content="Conference Central web app that lets you manage conferences.">
@@ -35,11 +36,42 @@
     </script>
     <script src="//apis.google.com/js/client:plusone.js?onload=init"></script>
 </head>
-
+<body
+class="page-template-default page page-id-42 page-parent research-and-reports"ng-controller="RootCtrl" ng-init="initSignInButton()">
+<header>
+    <div id="mobilebar">
+    <ul>
+        <li id="menutoggle">
+            <a href="#menu-main-navigation-1">Menu</a>
+        </li>
+        <li id="volunteerlogin">
+            <a href="https://aplusschools.secure.force.com/" target="_blank">Volunteer Sign-In</a>
+        </li>
+    </ul>
+</div>
+<div id="logo">
+    <h1>
+        <a href="/">A+ Schools - Pittsburgh&#039;s Community Alliance for Public Education</a>
+    </h1>
+</div>
+<div class="clear">
+</div>
+</header>
 <!-- Restore the credential from cookie if stored by calling initSignInButton() -->
-<body ng-controller="RootCtrl" ng-init="initSignInButton()">
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+<nav>
+    <div id="nav-wrapper">
+        <div class="menu-header">
+            <ul id="menu-main-navigation" class="menu">
+                <li id="menu-item-59" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-59">
+                    <a href="http://www.aplusschools.org/about-us/">About Us</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+</nav>
+<!--
+<div class="navbar navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -64,7 +96,7 @@
         </div>
     </div>
 </div>
-
+-->
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -74,18 +106,24 @@
                    ng-show="rootMessages"></i>
             </div>
         </div>
-    </div>
-    <ng-view></ng-view>
+    <div class="col-lg-4">
+        <h1>2016 Phillips All</h1>
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <div>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
+        <script src="/static/js/donut.js"></script>
 </div>
+<ng-view></ng-view>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="/js/app.js"></script>
-<script src="/js/controllers.js"></script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/controllers.js"></script>
 
-<!-- Put the signInButton to invoke the gapi.signin.render to restore the credential if stored in cookie. -->
-<span id="signInButton" style="display: none" disabled="true"></span>
 
 </body>
 </html>
