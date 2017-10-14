@@ -11,29 +11,14 @@
  * Root app, which routes and specifies the partial html and controller depending on the url requested.
  *
  */
-var app = angular.module('conferenceApp',
-    ['conferenceControllers', 'ngRoute', 'ui.bootstrap']).
+var app = angular.module('aplusApp',
+    ['aplusControllers', 'ngRoute', 'ui.bootstrap']).
     config(['$routeProvider',
         function ($routeProvider) {
             $routeProvider.
-                when('/conference', {
-                    templateUrl: '/partials/show_conferences.html',
-                    controller: 'ShowConferenceCtrl'
-                }).
-                when('/conference/create', {
-                    templateUrl: '/partials/create_conferences.html',
-                    controller: 'CreateConferenceCtrl'
-                }).
-                when('/conference/detail/:websafeConferenceKey', {
-                    templateUrl: '/partials/conference_detail.html',
-                    controller: 'ConferenceDetailCtrl'
-                }).
-                when('/profile', {
-                    templateUrl: '/partials/profile.html',
-                    controller: 'MyProfileCtrl'
-                }).
                 when('/', {
                     templateUrl: '/partials/home.html'
+                    controller: 'HomeCtrl'
                 }).
                 otherwise({
                     redirectTo: '/'
