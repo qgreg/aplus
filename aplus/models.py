@@ -2,7 +2,7 @@ import os
 import sys
 
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
@@ -70,7 +70,7 @@ class PSSA(db.Model):
             'subset': self.subset,
             'total_tested': self.total_tested,
             'below_basic': self.below_basic,
-            'basic': self.basicm
+            'basic': self.basic,
             'proficient': self.proficient,
             'advanced': self.advanced
         }
