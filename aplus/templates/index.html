@@ -8,122 +8,96 @@
 
     <title>A Plus Schools</title>
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-cosmo.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/aplus.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/main.css') }}">
     <link rel="stylesheet" href="/static/bootstrap/css/offcanvas.css">
     <link rel="shortcut icon" href="/static/img/favicon.ico">
-    <meta property="og:title" content="Conference Central">
+    <meta property="og:title" content="A Plus Schools">
     <meta property="og:type" content="website">
-    <meta property="og:description" content="Conference Central web app that lets you manage conferences.">
-    <meta property="og:image" content="/img/CloudPlatform_logo.png">
-    <meta property="og:site_name" content="An web app powered by Google App Engine">
+    <meta property="og:description" content="A Plus Schools web app that lets you browse PSSA data.">
+    <meta property="og:image" content="/static/img/logo_aplus_lg.png>
+    <meta property="og:site_name" content="A web app">
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
-    <script>
-        /**
-         * Initializes the Google API JavaScript client. Bootstrap the angular module after loading the Google libraries
-         * so that Google JavaScript library ready in the angular modules.
-         */
-        function init() {
-            gapi.client.load('conference', 'v1', null, '//' + window.location.host + '/_ah/api');
-            gapi.client.load('oauth2', 'v2', function () {
-                angular.bootstrap(document, ['conferenceApp']);
-            });
-        };
-    </script>
-    <script src="//apis.google.com/js/client:plusone.js?onload=init"></script>
 </head>
-<body
-class="page-template-default page page-id-42 page-parent research-and-reports"ng-controller="RootCtrl" ng-init="initSignInButton()">
-<header>
-    <div id="mobilebar">
-    <ul>
-        <li id="menutoggle">
-            <a href="#menu-main-navigation-1">Menu</a>
-        </li>
-        <li id="volunteerlogin">
-            <a href="https://aplusschools.secure.force.com/" target="_blank">Volunteer Sign-In</a>
-        </li>
-    </ul>
-</div>
-<div id="logo">
-    <h1>
-        <a href="/">A+ Schools - Pittsburgh&#039;s Community Alliance for Public Education</a>
-    </h1>
-</div>
-<div class="clear">
-</div>
-</header>
+<body ng-app="aplusApp">
+<!-- class="page-template-default page page-id-42 page-parent research-and-reports" -->
+    <header>
+        <div id="mobilebar">
+            <ul>
+                <li id="menutoggle">
+                    <a href="#menu-main-navigation-1">Menu</a>
+                </li>
+                <li id="volunteerlogin">
+                    <a href="https://aplusschools.secure.force.com/" target="_blank">Volunteer Sign-In</a>
+                </li>
+            </ul>
+        </div>
+        <div id="logo">
+            <h1>
+                <a href="/">A+ Schools - Pittsburgh&#039;s Community Alliance for Public Education</a>
+            </h1>
+        </div>
+        <div class="clear">
+        </div>
+    </header>
 <!-- Restore the credential from cookie if stored by calling initSignInButton() -->
 
-
-<nav>
-    <div id="nav-wrapper">
-        <div class="menu-header">
-            <ul id="menu-main-navigation" class="menu">
-                <li id="menu-item-59" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-59">
-                    <a href="http://www.aplusschools.org/about-us/">About Us</a>
+    <nav>
+        <div id="nav-wrapper">
+            <div class="menu-header">
+                <ul id="menu-main-navigation" class="menu">
+                    <li id="menu-item-59" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-59">
+                        <a href="http://www.aplusschools.org/about-us/">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
         </div>
-        <div class="clear"></div>
-    </div>
-</nav>
-<!--
-<div class="navbar navbar-inverse" role="navigation">
+    </nav>
+
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Conference Central</a>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Big column</h1>
+            </div>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('/conference')}" ng-click="collapseNavbar()"><a href="#/conference">Show Conferences</a></li>
-                <li ng-class="{ active: isActive('/conference/create')}" ng-click="collapseNavbar()"><a href="#/conference/create" >Create Conferences</a></li>
-                <li ng-class="{ active: isActive('/profile')}" ng-click="collapseNavbar()"><a href="#/profile">My Profile</a></li>
-                <li class="nav-divider"></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li id="signInLink" ng-hide="getSignedInState()"><a ng-click="signIn(); collapseNavbar()">Google+ SignIn</a></li>
-                <li id="signOutLink" ng-show="getSignedInState()"><a ng-click="signOut(); collapseNavbar()">Log out</a></li>
-            </ul>
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Column 1</h1>
+            </div>
+            <div class="col-md-4">
+                <h1>Column 2</h1>
+            </div>
+            <div class="col-md-4">
+                <h1>Column 3</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div ng-include="'/static/partials/donut.html'" ng-controller="DoughnutCtrl"></div>
+            </div>
+            <div class="col-md-4">
+                <h1>Test</h1>
+            </div>
         </div>
     </div>
-</div>
--->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div id="rootMessages" class="alert alert-{{alertStatus}}" ng-show="rootMessages">
-                <span ng-bind="rootMessages"></span>
-                <i class="dismiss-messages pull-right glyphicon glyphicon-remove" ng-click="rootMessages = ''"
-                   ng-show="rootMessages"></i>
-            </div>
-        </div>
-    <div class="col-lg-4">
-        <h1>2016 Phillips All</h1>
-        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
-            <div>
-                <canvas id="myChart"></canvas>
-            </div>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
-        <script src="/static/js/donut.js"></script>
-</div>
-<ng-view></ng-view>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="/static/js/app.js"></script>
-<script src="/static/js/controllers.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
+    <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+    <!--
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
+    
+    <script src="/static/js/donut.js"></script>
+    -->
+    <script src="/static/js/app.js"></script>
 
 </body>
 </html>
