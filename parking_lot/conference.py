@@ -9,42 +9,15 @@ created by wesc on 2014 apr 21
 import datetime
 import re
 
-import endpoints
-from protorpc import messages
-from protorpc import message_types
-from protorpc import remote
-
-from google.appengine.ext import ndb
-from google.appengine.api import memcache
-from google.appengine.api import taskqueue
-
 import logging
 
-from models import ConflictException
-from models import Profile
-from models import ProfileMiniForm
-from models import ProfileForm
-from models import TeeShirtSize
-from models import Conference
-from models import ConferenceForm
-from models import ConferenceForms
-from models import ConferenceQueryForm
-from models import ConferenceQueryForms
-from models import Session
-from models import SessionForm
-from models import SessionForms
-from models import Speaker
-from models import SpeakerForm
-from models import SpeakerForms
-from models import BooleanMessage
-from models import ConflictException
-from models import StringMessage
+from models import PSSA
 
 from settings import WEB_CLIENT_ID
 
 from utils import getUserId
 
-__author__ = 'wesc+api@google.com (Wesley Chun) amended by quinlangl@gmail.com (Greg Quinlan'  # noqa
+__author__ = 'quinlangl@gmail.com (Greg Quinlan'
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
