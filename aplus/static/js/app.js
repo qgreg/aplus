@@ -9,12 +9,36 @@
  * Root app, which routes and specifies the partial html and controller depending on the url requested.
  *
  */
-var app = angular.module("aplusApp", ['chart.js', 'ui.bootstrap']);
+var app = angular.module("aplusApp", ['chart.js', 'ngRoute', 'ui.bootstrap']);
 
 app.config(['$interpolateProvider', function($interpolateProvider) {
       $interpolateProvider.startSymbol('{a');
       $interpolateProvider.endSymbol('a}');
     }]);
+
+app.config(['$routeProvider',
+        function ($routeProvider) {
+            $routeProvider
+                .when('/browser', {
+                    templateUrl: '/static/partials/browser.html',
+                    controller: 'BrowserCtrl'
+                })
+                .when('/compare', {
+                    templateUrl: '/static/partials/donut.html',
+                    controller: 'DoughnutCtrl'
+                })
+                .when('/', {
+                    templateUrl: '/static/partials/home.html'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+        }]);
+
+app.controller('MainCtrl', ['$route',
+  function MainCtrl($route) {
+    this.$route = $route;
+}]);
 
 app.controller('DoughnutCtrl', ['$scope', 'dataFactory',
     function ($scope, dataFactory) {
@@ -47,7 +71,13 @@ app.controller('DoughnutCtrl', ['$scope', 'dataFactory',
                     $scope.labels = ['Advanced ' + ($scope.scores.advanced * 100).toFixed(1) + '%', 'Proficient '  + ($scope.scores.proficient * 100).toFixed(1) + '%', 'Basic ' + ($scope.scores.basic * 100).toFixed(1) + '%', 'Below Basic ' + ($scope.scores.below_basic * 100).toFixed(1) + '%'];
                     $scope.data = [$scope.scores.advanced, $scope.scores.proficient, $scope.scores.basic, $scope.scores.below_basic];
                     $scope.donutload = true;
-                    var myPie = new Chart(document.getElementById($scope.fullid).getContext("2d")).Doughnut($scope.data, $scope.labels, $scope.options);
+                    // var myPie = new Chart(document.getElementById($scope.fullid).getContext("2d")).Doughnut($scope.data, $scope.labels, $scope.options);
+                    var canvas = document.getElementById($scope.fullid);
+                    var ctx = canvas.getContext("2d");
+                    ctx.font = "10px Arial";
+                    var topScore = (($scope.scores.advanced + $scope.scores.proficient) * 100).toFixed(1);
+                    ctx.fillText("Hello",0,0);
+                    ctx.fillText(topScore + "%",10,50);
                 }, 
                 function (error) {
                     $scope.status = 'Error retrieving score! ' + error.message;
