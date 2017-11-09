@@ -1,8 +1,10 @@
 <div>
-    <h1>2016 {a school a} {a grade a} Grade {a subject a} - {a subset a}</h1>
+    <button type="button" class="close" aria-label="Close" onclick='this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode); return false;'>
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h1>2016 {a school a} Grade {a grade a} {a subject a} - {a subset a}</h1>
     <div>
-        <canvas id="{a idfull a}"></canvas>
+        <canvas id="{a fullid a}" class="chart chart-doughnut chart-xs" chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors"></canvas>
     </div>
-    <p>{a scores a}</p>
 </div>
 </div>
