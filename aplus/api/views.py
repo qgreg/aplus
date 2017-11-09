@@ -24,7 +24,7 @@ def index():
     return render_template('index.html')
 
 
-@api.route('/api/2016/ELA/Phillips')
+@api.route('/api/2016/PPS Phillips/3/ELA/All')
 def apiPSSA():
     return jsonify(
         year=2016,
