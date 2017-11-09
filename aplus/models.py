@@ -75,3 +75,29 @@ class PSSA(db.Model):
             'advanced': self.advanced
         }
 
+
+class School(db.Model):
+    school_name = db.Column(db.String(250), nullable=False)
+    school_no = db.Column(db.String(250), nullable=False)
+    configuration = db.Column(db.String(250), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+
+
+    def __init__(self, school_name, school_no, configuration):
+        self.school_name = school_name
+        self.school_no = school_no
+        self.configuration = configuration
+
+
+    def __repr__(self):
+        return '<School: {}>'.format(self.school_name)
+
+    @property
+    def serialize(self):
+        # Returns object data in easily serializable format
+        return {
+            'school_name': self.school_name,
+            'school_no': self.school_no,
+            'configuration': self.configuration
+        }
+
