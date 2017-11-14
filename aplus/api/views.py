@@ -24,27 +24,35 @@ def index():
     return render_template('index.html')
 
 
-@api.route('/api/2016/PPS Phillips/3/ELA/All')
-def apiPSSA():
-    return jsonify(
-        year=2016,
-        school='Phillips',
-        subject='ELA',
-        grade='3rd',
-        subset='All',
-        total_tested=45,
-        below_basic=0.067,
-        basic=0.356,
-        proficient=0.467,
-        advanced=0.111)
+@api.route('/api/<year>/<school>/<grade>/<subject>/<subset>')
+def apiPSSA(year, school, grade, subject, subset):
+    score = PSSA.query.filter(PSSA.year==year).filter(PSSA.school==school)\
+        .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+        .filter(PSSA.subset==subset).first_or_404()
+    resp = jsonify(score.serialize)
+    resp.status_code = 200
 
+    return resp
 
-#@api.route('/category/JSON')
-#def categoriesJSON():
-    """API for all categories.
+@api.route('/api/pssa/select/')
+def menuSelectJSON():
+    """API for browse select drop downs.
 
     Returns: JSON for all categories.
     """
-    # categories = Category.query.all()
-    #return jsonify(Category=[i.serialize for i in categories])
+    columns = ['year', 'school', 'subject', 'grade', 'subset']
+    output = {}
+    for col in columns:
+        labels = db.session.query(getattr(PSSA,col))\
+            .order_by(getattr(PSSA,col)).distinct().all()
+        if labels:
+            unzip = zip(*labels)
+            output[col] = unzip
+    print output
+    resp = jsonify(output)
+    resp.status_code = 200
+
+    return resp
+
+
 
