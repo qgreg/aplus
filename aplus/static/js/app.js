@@ -75,17 +75,17 @@ app.controller('BrowserCtrl', ['$scope', '$http', 'dataFactory',
                 function (response) {
                     $scope.status = 'Retrieved score!';
                     $scope.scores = response.data;
-                    $scope.labels = ['Advanced ' + $scope.scores.advanced + ' ' + ($scope.scores.advanced / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Proficient ' + $scope.scores.proficient + ' ' + ($scope.scores.proficient / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Basic ' + $scope.scores.basic + ' ' + ($scope.scores.basic / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Below Basic ' + $scope.scores.below_basic + ' ' + ($scope.scores.below_basic / $scope.scores.total_tested * 100).toFixed(1) + '%'];
-                    $scope.data = [$scope.scores.advanced, $scope.scores.proficient, $scope.scores.basic, $scope.scores.below_basic];
-                    $scope.donutload = true;
-                    // var myPie = new Chart(document.getElementById($scope.fullid).getContext("2d")).Doughnut($scope.data, $scope.labels, $scope.options);
-                    var canvas = document.getElementById($scope.fullid);
-                    var ctx = canvas.getContext("2d");
-                    ctx.font = "10px Arial";
-                    var topScore = (($scope.scores.advanced + $scope.scores.proficient) * 100).toFixed(1);
-                    ctx.fillText("Hello",0,0);
-                    ctx.fillText(topScore + "%",10,50);
-                }, 
+                    if ($scope.scores.hasOwnProperty('total_tested')) {
+                        $scope.labels = ['Advanced ' + $scope.scores.advanced + ' ' + ($scope.scores.advanced / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Proficient ' + $scope.scores.proficient + ' ' + ($scope.scores.proficient / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Basic ' + $scope.scores.basic + ' ' + ($scope.scores.basic / $scope.scores.total_tested * 100).toFixed(1) + '%', 'Below Basic ' + $scope.scores.below_basic + ' ' + ($scope.scores.below_basic / $scope.scores.total_tested * 100).toFixed(1) + '%'];
+                        $scope.data = [$scope.scores.advanced, $scope.scores.proficient, $scope.scores.basic, $scope.scores.below_basic];
+                        // var myPie = new Chart(document.getElementById($scope.fullid).getContext("2d")).Doughnut($scope.data, $scope.labels, $scope.options);
+                        var canvas = document.getElementById($scope.fullid);
+                        var ctx = canvas.getContext("2d");
+                        ctx.font = "10px Arial";
+                        var topScore = (($scope.scores.advanced + $scope.scores.proficient) * 100).toFixed(1);
+                        ctx.fillText("Hello",0,0);
+                        ctx.fillText(topScore + "%",10,50);
+                }}, 
                 function (error) {
                     $scope.status = 'Error retrieving score! ' + error.message;
                 })
