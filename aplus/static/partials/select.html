@@ -4,7 +4,7 @@
       <div class="form-group">
         <div ng-repeat="(nam, vals) in select">
           <label class="text-capitalize">{a nam a}:</label>
-          <select ng-model="pssa[nam]">
+          <select ng-model="pssa[nam]" ng-change="getScores()">
             <option ng-repeat="i in vals[0]" ngValue="{{i}}">{a i a}</option>
           </select>
         </div>
