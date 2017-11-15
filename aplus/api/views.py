@@ -28,9 +28,11 @@ def index():
 def apiPSSA(year, school, grade, subject, subset):
     score = PSSA.query.filter(PSSA.year==year).filter(PSSA.school==school)\
         .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
-        .filter(PSSA.subset==subset).first_or_404()
-    resp = jsonify(score.serialize)
-    resp.status_code = 200
+        .filter(PSSA.subset==subset).first()
+    if score:
+        resp = jsonify(score.serialize)
+    else:
+        return ('', 200)
 
     return resp
 
