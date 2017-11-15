@@ -3,7 +3,11 @@
       <span aria-hidden="true">&times;</span>
     </button>
     <h1>2017 {a pssa.school a} Grade {a pssa.grade a} {a pssa.subject a} - {a pssa.subset a}</h1>
-    <div>
-        <canvas id="{a fullid a}" class="chart chart-doughnut chart-xs" chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors"></canvas>
+    <p ng-if="scores.hasOwnProperty('total_tested') == false">There is no data for these paramenters.</p>
+    <div ng-if="scores.hasOwnProperty('total_tested')">
+        <p>This software is in test mode. Data has not been verified.</p>
+        <div>
+            <canvas id="{a fullid a}" class="chart chart-doughnut chart-xs" chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors"></canvas>
+        </div>
     </div>
 </div>
