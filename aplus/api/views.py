@@ -4,7 +4,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import DatabaseError
 
 
-from aplus.models import db, PSSA
+from aplus.models import db, PSSA, School
 
 import random
 import string
@@ -52,6 +52,36 @@ def menuSelectJSON():
             output[col] = unzip
     print output
     resp = jsonify(output)
+    resp.status_code = 200
+
+    return resp
+
+
+@api.route('/api/school/type/<school_type>')
+def schoolTypeListJSON(school_type):
+    """API for list of school by school type.
+    Arguements: 
+        school_type: string 'elementary', 'middle' or 'high' 
+
+    Returns: JSON of a list schools of the given type.
+    """
+    if school_type == 'elementary':
+        configOpts = ['K-5', 'K-8']
+    elif school_type == "middle":
+        configOpts = ['K-8', '6-8', '6-12']
+    elif school_type == 'high':
+        configOpts = ['6-12', '9-12']
+    else:
+        configOpts = []
+
+    output = {}
+    if configOpts != []:
+        labels = db.session.query(School.school_name)\
+            .filter(School.configuration.in_(configOpts))\
+            .order_by(School.school_name).distinct().all()
+        if labels:
+            print labels
+    resp = jsonify(data=labels)
     resp.status_code = 200
 
     return resp
