@@ -80,8 +80,9 @@ def schoolTypeListJSON(school_type):
             .filter(School.configuration.in_(configOpts))\
             .order_by(School.school_name).distinct().all()
         if labels:
-            print labels
-    resp = jsonify(data=labels)
+            unzip = zip(*labels)
+            output['School'] = unzip
+    resp = jsonify(output)
     resp.status_code = 200
 
     return resp
