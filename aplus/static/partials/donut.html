@@ -2,12 +2,13 @@
     <button type="button" class="close" aria-label="Close" onclick='this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode); return false;'>
       <span aria-hidden="true">&times;</span>
     </button>
-    <h1>2017 {a pssa.school a} Grade {a pssa.grade a} {a pssa.subject a} - {a pssa.subset a}</h1>
-    <p ng-if="scores.hasOwnProperty('total_tested') == false">There is no data for these paramenters.</p>
-    <div ng-if="scores.hasOwnProperty('total_tested')">
+    <h1>2017 {a score.school a} Grade {a score.grade a} {a score.subject a} - {a score.subset a}</h1>
+    <p ng-if="score.hasOwnProperty('total_tested') == false">There is no data for these paramenters.</p>
+    <div ng-if="score.hasOwnProperty('total_tested')">
         <p>This software is in test mode. Data has not been verified.</p>
+        <p>Adv: {a score.advanced a} Pro: {a score.proficient a} Bas: {a score.basic a} BB: {a score.below_basic a} Full: {a score.fullid a}</p>
         <div>
-            <canvas id="{a fullid a}" class="chart chart-doughnut chart-xs" chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors"></canvas>
+            <canvas id="{a score.fullid a}" class="chart chart-doughnut chart-xs" chart-data="score.data" chart-labels="score.labels" chart-options="options" chart-colors="colors"></canvas>
         </div>
     </div>
 </div>
