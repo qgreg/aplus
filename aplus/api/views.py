@@ -1,9 +1,9 @@
+from __future__ import division
 from flask import Flask, render_template, request, redirect, url_for, flash, \
 	jsonify, Blueprint, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy import or_
-
 
 from aplus.models import db, PSSA, School
 
@@ -32,6 +32,36 @@ def apiPSSA(year, school, grade, subject, subset):
         .filter(PSSA.subset==subset).first()
     if score:
         resp = jsonify(score.serialize)
+    else:
+        return ('', 200)
+
+    return resp
+
+
+@api.route('/api/list/<year>/<grade>/<subject>/<subset>')
+def apiListPSSA(year, grade, subject, subset):
+    scores = PSSA.query.filter(PSSA.year==year)\
+        .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+        .filter(PSSA.subset==subset).all()
+    if scores:
+        output = []
+        for score in scores:
+            ts = score.serialize
+            if 'total_tested' in ts:
+                if 'below_basic' in ts:
+                    ts['below_basic_rate'] = round(float(ts['below_basic']/
+                        ts['total_tested']*100),1)
+                if 'basic' in ts:
+                    ts['basic_rate'] = round(float(
+                        ts['basic']/ts['total_tested']*100),1)
+                if 'proficient' in ts:
+                    ts['proficient_rate'] = round(float(
+                        ts['proficient']/ts['total_tested']*100),1)
+                if 'advanced' in ts:
+                    ts['advanced_rate'] = round(float(
+                        ts['advanced']/ts['total_tested']*100),1)
+            output.append(ts)
+        resp = jsonify(data=output)
     else:
         return ('', 200)
 
@@ -67,6 +97,7 @@ def apiSchoolPSSA(school, year, grade, subject, subset):
 
     return resp
 
+
 @api.route('/api/pssa/select/')
 def menuSelectJSON():
     """API for browse select drop downs.
@@ -88,8 +119,42 @@ def menuSelectJSON():
     return resp
 
 
-@api.route('/api/school/type/<school_type>')
+@api.route('/api/pssa/list/<school_type>')
 def schoolTypeListJSON(school_type):
+    """API for list options for drop down filtered for school type.
+    Arguements: 
+        school_type: string 'elementary', 'middle' or 'high' 
+
+    Returns: JSON for columns and options.
+    """
+    if school_type == 'Elementary':
+        grades = ['3rd', '4th', '5th']
+    elif school_type == "Middle":
+        grades = ['6th', '7th', '8th']
+    elif school_type == 'High':
+        grades = ['9th', '10th', '11th', '12th']
+    else:
+        grades = []
+
+    columns = ['year', 'subject', 'grade', 'subset']
+    output = {}
+    if grades != []:
+        for col in columns:
+            labels = db.session.query(getattr(PSSA,col))\
+                .filter(PSSA.grade.in_(grades))\
+                .order_by(getattr(PSSA,col)).distinct().all()
+            if labels:
+                unzip = zip(*labels)
+                output[col] = unzip
+    print output
+    resp = jsonify(output)
+    resp.status_code = 200
+
+    return resp
+
+
+@api.route('/api/school/type/<school_type>')
+def schoolTypeJSON(school_type):
     """API for list of school by school type.
     Arguements: 
         school_type: string 'elementary', 'middle' or 'high' 
