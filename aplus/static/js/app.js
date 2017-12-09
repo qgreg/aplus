@@ -48,8 +48,8 @@ app.controller('MainCtrl', ['$route',
 }]);
 
 
-app.controller('BrowserCtrl', ['$scope', '$http', 'ngResource', 'dataFactory',
-    function ($scope, $http, ngResource, dataFactory) {
+app.controller('BrowserCtrl', ['$scope', '$http', 'dataFactory',
+    function ($scope, $http, dataFactory) {
 
     $scope.pssa = {
     "year": "",
@@ -221,8 +221,10 @@ app.controller('DoughnutCtrl', ['$scope', 'dataFactory',
     };
 }]);
 
-app.controller('CompareCtrl', ['$scope', '$http', 'dataFactory',
-    function ($scope, $http, dataFactory) {
+app.controller('CompareCtrl', ['$scope', '$http', '$route', 'dataFactory',
+    function ($scope, $http, $route, dataFactory) {
+
+    $scope.entryView = {"status": true};
 
     $scope.schoolTypeOpt = {
     "Elementary": "Elementary",
@@ -247,6 +249,10 @@ app.controller('CompareCtrl', ['$scope', '$http', 'dataFactory',
     $scope.schoolList = "";
     $scope.schoolOpt = "";
 
+    $scope.reloadRoute = function() {
+       $route.reload();
+    };
+
     $scope.getSchoolList = function () {
         $http.get('/api/school/type/' + $scope.schoolType)
         .then(function (result) {
@@ -265,6 +271,7 @@ app.controller('CompareCtrl', ['$scope', '$http', 'dataFactory',
                 function (response) {
                     $scope.status = 'Retrieved score!';
                     $scope['scores' + num] = response.data;
+                    $scope.entryView.status = false;
                 }, 
                 function (error) {
                     $scope.status = 'Error retrieving score! ' 
