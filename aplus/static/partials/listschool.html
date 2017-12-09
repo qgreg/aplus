@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-12">
+    <div ng-show="entryView.status">
+      <form>
+        <div class="form-group">
+            <label>School Type:</label>
+            <select ng-model="schoolType" ng-change="getSchoolList()">
+              <option ng-repeat="(labl, valu) in schoolTypeOpt" ngValue="{a valu a}">{a labl a}</option>
+            </select>
+        </div>
+      </form>
+      <div ng-if="schoolType">
+        <form>
+          <div class="form-group">
+            <div ng-repeat="(nam, vals) in select">
+              <label class="text-capitalize">{a nam a}:</label>
+              <select ng-model="pssa[nam]" ng-change="checkChange()">
+                <option ng-repeat="i in vals[0]" ngValue="{{i}}">{a i a}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div ng-if="pssa.year && pssa.grade && pssa.subject && pssa.subset">
+      <div ng-include="'/static/partials/sortlist.html'"></div>
+    </div>
+  </div>
+</div>

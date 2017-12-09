@@ -1,0 +1,23 @@
+<div class="col-md-12">
+  <div ng-controller="ListTableCtrl" ng-init="getListScores()">
+    <h1>List of Schools for {a pssa.year a} {a pssa.subject a} {a pssa.grade a} {a pssa.subset a}</h1> 
+    <a ng-click='reloadRoute()'>Generate a new list.</a>
+    <table ng-table="tableParams" class="table table-bordered table-striped table-condensed">
+      <tbody>
+        <!--<tr><th>School</th><th>Total Tested</th><th>Advanced #</th><th>Advanced %</th><th>Proficient #</th><th>Proficient %</th><th>Basic #</th><th>Basic %</th><th>Below Basic #</th><th>Below Basic %</th></tr>-->
+        <tr ng-repeat="e in $data track by e.school">
+          <td title="'School'" sortable="'school'">{a e.school a}</td>
+          <td title="'Total Tested'" sortable="'total_tested'">{a e.total_tested a}</td>
+          <td title="'Advanced #'" sortable="'advanced'">{a e.advanced a}</td>
+          <td title="'Advanced %'" sortable="'advanced_rate'">{a e.advanced_rate a}</td>
+          <td title="'Proficient #'" sortable="'proficient'">{a e.proficient a}</td>
+          <td title="'Proficient %'" sortable="'proficient_rate'">{a e.proficient_rate a}</td>
+          <td title="'Basic #'" sortable="'basic'">{a e.basic a}</td>
+          <td title="'Basic %'" sortable="'basic_rate'">{a e.basic_rate a}</td>
+          <td title="'Below Basic #'" sortable="'below_basic'">{a e.below_basic a}</td>
+          <td title="'Below Basic %'" sortable="'below_basic_rate'">{a e.below_basic_rate a}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
