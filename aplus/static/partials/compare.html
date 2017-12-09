@@ -1,49 +1,55 @@
 <div class="row">
   <div class="col-md-12">
-    <form>
-      <div class="form-group">
-          <label>School Type:</label>
-          <select ng-model="schoolType" ng-change="getSchoolList()">
-            <option ng-repeat="(labl, valu) in schoolTypeOpt" ngValue="{a valu a}">{a labl a}</option>
-          </select>
-      </div>
-    </form>
-    <div ng-if="schoolType">
-      <h1>Compare <span ng-if="schools.first">{a schools.first a}</span><span ng-if="schools.first && schools.second"> and </span><span ng-if="schools.second">{a schools.second a}</span></h1>
+    <div ng-show="entryView.status">
+      <h1>Compare Two Schools</h1>
       <form>
         <div class="form-group">
-          <label class="text-capitalize">First School:</label>
-          <select ng-model="schools.first" ng-change="getSchoolOpt(schools.first, schools.second)">
-            <option ng-repeat="i in schoolList['School'][0]" ngValue="{{i}}">{a i a}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="text-capitalize">Second School:</label>
-          <select ng-model="schools.second" ng-change="getSchoolOpt(schools.first, schools.second)">
-            <option ng-repeat="i in schoolList['School'][0]" ngValue="{{i}}">{a i a}</option>
-          </select>
+            <label>School Type:</label>
+            <select ng-model="schoolType" ng-change="getSchoolList()">
+              <option ng-repeat="(labl, valu) in schoolTypeOpt" ngValue="{a valu a}">{a labl a}</option>
+            </select>
         </div>
       </form>
-      <div ng-if="schools.first && schools.second">
+      <div ng-if="schoolType">
+        <h1>Compare <span ng-if="schools.first">{a schools.first a}</span><span ng-if="schools.first && schools.second"> and </span><span ng-if="schools.second">{a schools.second a}</span></h1>
         <form>
           <div class="form-group">
-            <div ng-repeat="(nam, vals) in schoolOpt">
-              <label class="text-capitalize">{a nam a}:</label>
-              <select ng-model="pssa[nam]">
-                <option ng-if="nam=='subset' || nam=='subject'" ng-selected="selected" value="All">All</option>
-                <option ng-repeat="i in vals[0]" ngValue="{{i}}">{a i a}</option>
-              </select>
-            </div>
+            <label class="text-capitalize">First School:</label>
+            <select ng-model="schools.first" ng-change="getSchoolOpt(schools.first, schools.second)">
+              <option ng-repeat="i in schoolList['School'][0]" ngValue="{{i}}">{a i a}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="text-capitalize">Second School:</label>
+            <select ng-model="schools.second" ng-change="getSchoolOpt(schools.first, schools.second)">
+              <option ng-repeat="i in schoolList['School'][0]" ngValue="{{i}}">{a i a}</option>
+            </select>
           </div>
         </form>
-        <button ng-click="pssa.ready=true;" class="btn">View Charts</button>
       </div>
-      <div ng-show="pssa.ready"></div>
+      <div ng-if="schools.first && schools.second">
+          <form>
+            <div class="form-group">
+              <div ng-repeat="(nam, vals) in schoolOpt">
+                <label class="text-capitalize">{a nam a}:</label>
+                <select ng-model="pssa[nam]">
+                  <option ng-if="nam=='subset' || nam=='subject'" ng-selected="selected" value="All">All</option>
+                  <option ng-repeat="i in vals[0]" ngValue="{{i}}">{a i a}</option>
+                </select>
+              </div>
+            </div>
+          </form>
+          <button ng-click="pssa.ready=true;" class="btn">View Charts</button>
+      </div>
+    </div>
+    <div ng-if="pssa.ready" ng-init="getSchoolScores(schools.first, pssa, 1)">
       <div class="row">
-        <div ng-if="pssa.ready" ng-init="getSchoolScores(schools.first, pssa, 1)">
-          <div ng-repeat="score in scores1.data" class="col-md-6">
-            <div ng-include="'/static/partials/donut.html'" ng-init="getChartParam(score)"></div>
-          </div>
+        <div class="col-md-12">
+          <h1>Compare Scores for {a schools.first a} & {a schools.second a}</h1> 
+          <a ng-click='reloadRoute()'>Generate new charts.</a>
+        </div>
+        <div ng-repeat="score in scores1.data" class="col-md-6">
+          <div ng-include="'/static/partials/donut.html'" ng-init="getChartParam(score)"></div>
         </div>
         <div ng-if="pssa.ready" ng-init="getSchoolScores(schools.second, pssa, 2)">
           <div ng-repeat="score in scores2.data" class="col-md-6">
