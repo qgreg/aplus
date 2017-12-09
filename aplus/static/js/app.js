@@ -9,39 +9,47 @@
  * Root app, which routes and specifies the partial html and controller depending on the url requested.
  *
  */
-var app = angular.module("aplusApp", ['chart.js', 'ngRoute', 'ui.bootstrap']);
+var app = angular.module(
+    "aplusApp", ['chart.js', 'ngRoute', 'ui.bootstrap', 'ngTable']);
 
 app.config(['$interpolateProvider', function($interpolateProvider) {
       $interpolateProvider.startSymbol('{a');
       $interpolateProvider.endSymbol('a}');
     }]);
 
-app.config(["$routeProvider","$locationProvider", function ($routeProvider,$locationProvider) {
-      $routeProvider
-                .when('/browse', {
-                    templateUrl: '../static/partials/select.html',
-                    controller: 'BrowserCtrl'
-                })
-                .when('/compare', {
-                    templateUrl: '../static/partials/compare.html',
-                    controller: 'CompareCtrl'
-                })
-                .when('/', {
-                    templateUrl: '../static/partials/home.html'
-                })
-                .otherwise({
-                    redirectTo: '/'
-                });
-      $locationProvider.hashPrefix('');
-        }]);
+app.config(["$routeProvider","$locationProvider", function (
+    $routeProvider,$locationProvider) {
+  $routeProvider
+    .when('/browse', {
+        templateUrl: '../static/partials/select.html',
+        controller: 'BrowserCtrl'
+    })
+    .when('/compare', {
+        templateUrl: '../static/partials/compare.html',
+        controller: 'CompareCtrl'
+    })
+    .when('/list', {
+        templateUrl: '../static/partials/listschool.html',
+        controller: 'ListCtrl'
+    })
+    .when('/', {
+        templateUrl: '../static/partials/home.html'
+    })
+    .otherwise({
+        redirectTo: '/'
+    });
+  $locationProvider.hashPrefix('');
+}]);
+
 
 app.controller('MainCtrl', ['$route',
   function MainCtrl($route) {
     this.$route = $route;
 }]);
 
-app.controller('BrowserCtrl', ['$scope', '$http', 'dataFactory',
-    function ($scope, $http, dataFactory) {
+
+app.controller('BrowserCtrl', ['$scope', '$http', 'ngResource', 'dataFactory',
+    function ($scope, $http, ngResource, dataFactory) {
 
     $scope.pssa = {
     "year": "",
@@ -98,8 +106,75 @@ app.controller('BrowserCtrl', ['$scope', '$http', 'dataFactory',
             $scope.status = 'Error retrieving score! ' + error.message;
           })
     };
+
 }]);
 
+
+app.controller('ListCtrl', ['$scope', '$http', function ($scope, $http) {
+
+    $scope.entryView = {"status": true};
+
+    $scope.schoolTypeOpt = {
+    "Elementary": "Elementary",
+    "Middle": "Middle",
+    "High": "High"
+    };
+
+    $scope.pssa = {
+    "year": "",
+    "subject": "",
+    "school": "",
+    "grade": "",
+    "subset": ""
+    };
+
+    $scope.status;
+    $scope.scores = {"data": ""};
+
+    $scope.getSchoolList = function () {
+      $http.get('/api/pssa/list/' + $scope.schoolType)
+        .then(function (result) {
+          $scope.select = result.data;
+        })
+    };
+
+}]);
+
+
+app.controller('ListTableCtrl', [
+    '$scope', '$route', 'dataFactory', 'NgTableParams', 
+        function ($scope, $route, dataFactory, NgTableParams) {
+
+    var tabParams = {
+        page: 1,            // show first page
+        count: 10,          // count per page
+        sorting: { school: "asc" }
+    };
+    var theData = []
+
+    $scope.getListScores = function () {
+        dataFactory.getListScores(
+            $scope.pssa.year,
+            $scope.pssa.grade,
+            $scope.pssa.subject,
+            $scope.pssa.subset)
+          .then(
+            function (response) {
+                $scope.status = 'Retrieved score!';
+                $scope.scores = response.data;
+                var theData = angular.copy($scope.scores['data']);
+                $scope.tableParams = new NgTableParams(
+                    tabParams, {dataset: theData});
+                $scope.entryView.status = false;
+            }
+          )
+      };
+
+$scope.reloadRoute = function() {
+   $route.reload();
+};
+
+}]);
 
 app.controller('DoughnutCtrl', ['$scope', 'dataFactory',
     function ($scope, dataFactory) {
