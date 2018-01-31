@@ -31,14 +31,14 @@ def apiPSSA(year, school, grade, subject, subset):
         .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
         .filter(PSSA.subset==subset).first()
     if score:
-        if score['total_tested'] < 11:
+        if score.total_tested < 11:
             resp = jsonify({
-                'year': score['year'],
-                'school': score['school'],
-                'subject': score['subject'],
-                'grade': score['grade'],
-                'subset': score['subset'],
-                'total_tested': score['total_tested'],
+                'year': score.year,
+                'school': score.school,
+                'subject': score.subject,
+                'grade': score.grade,
+                'subset': score.subset,
+                'total_tested': score.total_tested,
                 'status': 'Data hidden to protect student privacy.'})
         else:
             resp = jsonify(score.serialize)
@@ -58,14 +58,14 @@ def apiListPSSA(year, grade, subject, subset):
         for score in scores:
             ts = score.serialize
             if 'total_tested' in ts:
-                if score['total_tested'] < 11:
+                if score.total_tested < 11:
                     ts = {
-                        'year': score['year'],
-                        'school': score['school'],
-                        'subject': score['subject'],
-                        'grade': score['grade'],
-                        'subset': score['subset'],
-                        'total_tested': score['total_tested'],
+                        'year': score.year,
+                        'school': score.school,
+                        'subject': score.subject,
+                        'grade': score.grade,
+                        'subset': score.subset,
+                        'total_tested': score.total_tested,
                         'status': 'Data hidden to protect student privacy.'}
                 else:
                     if 'below_basic' in ts:
@@ -99,32 +99,30 @@ def apiSchoolPSSA(school, year, grade, subject, subset):
             .filter(PSSA.school==school).filter(PSSA.grade==grade)\
             .filter(PSSA.subject==subject).all()
     elif subject == "All" and subset == "All":
-         scores = PSSA.query.filter(PSSA.year==year)\
-            .filter(PSSA.school==school).filter(PSSA.grade==grade)\
-            .filter(PSSA.subject==subject).all()
+        scores = PSSA.query.filter(PSSA.year==year)\
+            .filter(PSSA.school==school).filter(PSSA.grade==grade).all()
     else:
         scores = PSSA.query.filter(PSSA.year==year)\
             .filter(PSSA.school==school).filter(PSSA.grade==grade)\
             .filter(PSSA.subject==subject).filter(PSSA.subset==subset).all()
     if scores:
-        print scores
         output = []
         for score in scores:
             ts = score.serialize
             if hasattr(score, 'total_tested'):
-                if score['total_tested'] < 11:
+                if score.total_tested < 11:
                     ts = {
-                        'year': score['year'],
-                        'school': score['school'],
-                        'subject': score['subject'],
-                        'grade': score['grade'],
-                        'subset': score['subset'],
-                        'total_tested': score['total_tested'],
+                        'year': score.year,
+                        'school': score.school,
+                        'subject': score.subject,
+                        'grade': score.grade,
+                        'subset': score.subset,
+                        'total_tested': score.total_tested,
                         'status': 'Data hidden to protect student privacy.'}
             output.append(ts)
         resp = jsonify(data=output)
     else:
-        return ('', 200)
+        return ('Nothing', 200)
 
     return resp
 
