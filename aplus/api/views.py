@@ -31,7 +31,17 @@ def apiPSSA(year, school, grade, subject, subset):
         .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
         .filter(PSSA.subset==subset).first()
     if score:
-        resp = jsonify(score.serialize)
+        if score['total_tested'] < 11:
+            resp = jsonify({
+                'year': score['year'],
+                'school': score['school'],
+                'subject': score['subject'],
+                'grade': score['grade'],
+                'subset': score['subset'],
+                'total_tested': score['total_tested'],
+                'status': 'Data hidden to protect student privacy.'})
+        else:
+            resp = jsonify(score.serialize)
     else:
         return ('', 200)
 
@@ -48,18 +58,28 @@ def apiListPSSA(year, grade, subject, subset):
         for score in scores:
             ts = score.serialize
             if 'total_tested' in ts:
-                if 'below_basic' in ts:
-                    ts['below_basic_rate'] = round(float(ts['below_basic']/
-                        ts['total_tested']*100),1)
-                if 'basic' in ts:
-                    ts['basic_rate'] = round(float(
-                        ts['basic']/ts['total_tested']*100),1)
-                if 'proficient' in ts:
-                    ts['proficient_rate'] = round(float(
-                        ts['proficient']/ts['total_tested']*100),1)
-                if 'advanced' in ts:
-                    ts['advanced_rate'] = round(float(
-                        ts['advanced']/ts['total_tested']*100),1)
+                if score['total_tested'] < 11:
+                    ts = {
+                        'year': score['year'],
+                        'school': score['school'],
+                        'subject': score['subject'],
+                        'grade': score['grade'],
+                        'subset': score['subset'],
+                        'total_tested': score['total_tested'],
+                        'status': 'Data hidden to protect student privacy.'}
+                else:
+                    if 'below_basic' in ts:
+                        ts['below_basic_rate'] = round(float(ts['below_basic']/
+                            ts['total_tested']*100),1)
+                    if 'basic' in ts:
+                        ts['basic_rate'] = round(float(
+                            ts['basic']/ts['total_tested']*100),1)
+                    if 'proficient' in ts:
+                        ts['proficient_rate'] = round(float(
+                            ts['proficient']/ts['total_tested']*100),1)
+                    if 'advanced' in ts:
+                        ts['advanced_rate'] = round(float(
+                            ts['advanced']/ts['total_tested']*100),1)
             output.append(ts)
         resp = jsonify(data=output)
     else:
@@ -90,7 +110,18 @@ def apiSchoolPSSA(school, year, grade, subject, subset):
         print scores
         output = []
         for score in scores:
-            output.append(score.serialize)
+            ts = score.serialize
+            if hasattr(score, 'total_tested'):
+                if score['total_tested'] < 11:
+                    ts = {
+                        'year': score['year'],
+                        'school': score['school'],
+                        'subject': score['subject'],
+                        'grade': score['grade'],
+                        'subset': score['subset'],
+                        'total_tested': score['total_tested'],
+                        'status': 'Data hidden to protect student privacy.'}
+            output.append(ts)
         resp = jsonify(data=output)
     else:
         return ('', 200)
