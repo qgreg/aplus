@@ -4,7 +4,8 @@
     </button>
     <h1>2017 {a score.school a} Grade {a score.grade a} {a score.subject a} - {a score.subset a}</h1>
     <p ng-if="score.hasOwnProperty('total_tested') == false">There is no data for these paramenters.</p>
-    <div ng-if="score.hasOwnProperty('total_tested')">
+    <p ng-if="score.hasOwnProperty('status') == true">{a score.status a}</p>
+    <div ng-if="score.hasOwnProperty('total_tested') && !(score.hasOwnProperty('status'))">
         <p>This software is in test mode. Data has not been verified.</p>
         <div>
             <canvas id="{a score.fullid a}" class="chart chart-doughnut chart-xs" chart-data="score.data" chart-labels="score.labels" chart-options="options" chart-colors="colors"></canvas>
