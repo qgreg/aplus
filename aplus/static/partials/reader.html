@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>Third Grade Reading Goals</h1>
+    <form>
+      <div class="form-group">
+        <div ng-repeat="(nam, vals) in select">
+          <label class="text-capitalize">{a nam a}:</label>
+          <select ng-model="pssa[nam]" ng-change="readScores()">
+            <option ng-selected="selected" value="All">All</option>
+            <option ng-repeat="i in vals[0]" ngValue="{{i}}">{a i a}</option>
+          </select>
+        </div>
+      </div>
+    </form>
+    <div ng-show="pssa.school && pssa.subset">
+      <div ng-init="readScores()">
+        <div ng-show="score.status">
+          <p>{a score.status a}</p>
+        </div>
+        <div ng-show="score.total_tested > 10">
+          <h1>Total Tested:</h1>
+          <h1>{a score.total_tested a}</h1>
+          <h1>Number Proficient:</h1>
+          <h1>{a readKids a}</h1>
+          <h1>Percent Proficient:</h1>
+          <h1>{a readPercent a}%</h1>
+          <div ng-show="goalKids > 0">
+            <h1>Children to Goal:</h1>
+            <h1>{a goalKids a}</h1>
+          </div>
+          <div ng-show="goalKids < 1">
+            <h1>Goal Met!</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
