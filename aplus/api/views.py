@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, \
 	jsonify, Blueprint, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 from aplus.models import db, PSSA, School
 
@@ -27,10 +27,60 @@ def index():
 
 @api.route('/api/<year>/<school>/<grade>/<subject>/<subset>')
 def apiPSSA(year, school, grade, subject, subset):
-    score = PSSA.query.filter(PSSA.year==year).filter(PSSA.school==school)\
-        .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
-        .filter(PSSA.subset==subset).first()
+    race = [
+      "American Indian or Alaska Native",
+      "Asian",
+      "Black",
+      "Hispanic",
+      "Multi-Racial",
+      "Native Hawaiian or Other Pacific Islander",
+      "White"
+    ]
+    if school == "All" and subset != "All":
+        score = db.session.query(
+            func.sum(PSSA.proficient).label("proficient"),
+            func.sum(PSSA.advanced).label("advanced"),
+            func.sum(PSSA.basic).label("basic"),
+            func.sum(PSSA.below_basic).label("below_basic"), 
+            func.sum(PSSA.total_tested).label('total_tested'),
+            PSSA.year, PSSA.grade, PSSA.subset, PSSA.subject)\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.subject)\
+            .group_by(PSSA.subset)\
+            .filter(PSSA.year==year)\
+            .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+            .filter(PSSA.subset==subset).first()
+    elif school != "All" and subset == "All":
+        score = db.session.query(
+            func.sum(PSSA.proficient).label("proficient"),
+            func.sum(PSSA.advanced).label("advanced"),
+            func.sum(PSSA.basic).label("basic"),
+            func.sum(PSSA.below_basic).label("below_basic"), 
+            func.sum(PSSA.total_tested).label("total_tested"),
+            PSSA.year, PSSA.grade, PSSA.school, PSSA.subject)\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.subject)\
+            .group_by(PSSA.school)\
+            .filter(PSSA.year==year).filter(PSSA.school==school)\
+            .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+            .filter(PSSA.subset.in_(race)).first()
+    elif school == "All" and subset == "All":
+        score = db.session.query(
+            func.sum(PSSA.proficient).label('proficient'),
+            func.sum(PSSA.advanced).label('advanced'),
+            func.sum(PSSA.basic).label('basic'),
+            func.sum(PSSA.below_basic).label('below_basic'), 
+            func.sum(PSSA.total_tested).label('total_tested'),
+            PSSA.year, PSSA.grade, PSSA.subject)\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.subject)\
+            .filter(PSSA.year==year)\
+            .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+            .filter(PSSA.subset.in_(race)).first()
+    else:
+        score = PSSA.query.filter(PSSA.year==year).filter(PSSA.school==school)\
+            .filter(PSSA.grade==grade).filter(PSSA.subject==subject)\
+            .filter(PSSA.subset==subset).first()
     if score:
+        score.school = school
+        score.subset = subset
         if score.total_tested < 11:
             resp = jsonify({
                 'year': score.year,
@@ -41,7 +91,17 @@ def apiPSSA(year, school, grade, subject, subset):
                 'total_tested': score.total_tested,
                 'status': 'Data hidden to protect student privacy.'})
         else:
-            resp = jsonify(score.serialize)
+            resp = jsonify({
+                'year': score.year,
+                'school': score.school,
+                'subject': score.subject,
+                'grade': score.grade,
+                'subset': score.subset,
+                'total_tested': score.total_tested,
+                'proficient': score.proficient,
+                'advanced': score.advanced,
+                'below_basic': score.below_basic,
+                'basic': score.basic})
     else:
         return ('', 200)
 
@@ -127,6 +187,52 @@ def apiSchoolPSSA(school, year, grade, subject, subset):
     return resp
 
 
+@api.route('/api/3rdELA/<year>/<school>/<subset>')
+def api3rdELA(year, school, subset):
+    if school == "All" and subset == "All":
+        result = db.session.query(PSSA.year, PSSA.grade, 
+            (func.sum(PSSA.proficient) + func.sum(PSSA.advanced)).label(
+                "grade_level"),
+            (func.sum(PSSA.total_tested).label("total_tested")))\
+            .group_by(PSSA.year).group_by(PSSA.grade)\
+            .filter(PSSA.year==year).filter(PSSA.grade=="3rd").first()
+    elif school != "All" and subset == "All":
+        result = db.session.query(PSSA.year,  PSSA.grade, PSSA.school, 
+            (func.sum(PSSA.proficient) + func.sum(PSSA.advanced)).label(
+                "grade_level"),
+            (func.sum(PSSA.total_tested).label("total_tested")))\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.school)\
+            .filter(PSSA.year==year).filter(PSSA.grade=="3rd")\
+            .filter(PSSA.school==school).first()
+    elif school == "All" and subset != "All":
+        result = db.session.query(PSSA.year,  PSSA.grade, PSSA.subset, 
+            (func.sum(PSSA.proficient) + func.sum(PSSA.advanced)).label(
+                "grade_level"),
+            (func.sum(PSSA.total_tested).label("total_tested")))\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.subset)\
+            .filter(PSSA.year==year).filter(PSSA.grade=="3rd")\
+            .filter(PSSA.subset==subset).first()
+    else:
+        result = db.session.query(PSSA.year, PSSA.grade, PSSA.school, 
+            PSSA.subset, (func.sum(PSSA.proficient) + func.sum(
+                PSSA.advanced)).label("grade_level"),
+            (func.sum(PSSA.total_tested).label("total_tested")))\
+            .group_by(PSSA.year).group_by(PSSA.grade).group_by(PSSA.school)\
+            .group_by(PSSA.subset)\
+            .filter(PSSA.year==year).filter(PSSA.grade=="3rd")\
+            .filter(PSSA.school==school).filter(PSSA.subset==subset).first()
+    if result:
+        print (result)
+        if result.total_tested < 11:
+            result['grade_level'] = ''
+            result['status'] = 'Data hidden to protect student privacy.'
+        resp = jsonify(data=result)
+    else:
+        return ('', 200)
+
+    return resp
+
+
 @api.route('/api/pssa/select/')
 def menuSelectJSON():
     """API for browse select drop downs.
@@ -137,6 +243,29 @@ def menuSelectJSON():
     output = {}
     for col in columns:
         labels = db.session.query(getattr(PSSA,col))\
+            .order_by(getattr(PSSA,col)).distinct().all()
+        if labels:
+            unzip = zip(*labels)
+            output[col] = unzip
+    print output
+    resp = jsonify(output)
+    resp.status_code = 200
+
+    return resp
+
+
+@api.route('/api/third/select/')
+def thirdMenuSelectJSON():
+    """API for browse third grade select drop downs.
+
+    Returns: JSON for all categories.
+    """
+    columns = ['school', 'subset']
+    output = {}
+    for col in columns:
+        labels = db.session.query(getattr(PSSA,col))\
+            .filter(PSSA.grade=="3rd").filter(PSSA.year=="2017")\
+            .filter(PSSA.subject=="PSSA ELA")\
             .order_by(getattr(PSSA,col)).distinct().all()
         if labels:
             unzip = zip(*labels)
