@@ -32,6 +32,10 @@ app.config(["$routeProvider","$locationProvider", function (
         templateUrl: '../static/partials/listschool.html',
         controller: 'ListCtrl'
     })
+    .when('/reading', {
+      templateUrl: '../static/partials/reader.html',
+      controller: 'ReadCtrl'
+    })
     .when('/', {
         templateUrl: '../static/partials/home.html'
     })
@@ -305,6 +309,45 @@ app.controller('CompareCtrl', ['$scope', '$http', '$route', 'dataFactory',
                 position: 'bottom'
             }};
       };
+}]);
+
+app.controller('ReadCtrl', ['$scope', '$http', 'dataFactory',
+    function ($scope, $http, dataFactory) {
+
+    $scope.pssa = {
+    "year": "",
+    "subject": "",
+    "school": "",
+    "grade": "",
+    "subset": ""
+    };
+
+    $http.get('/api/third/select')
+        .then(function (result) {
+            $scope.select = result.data;
+        });
+
+    $scope.status;
+
+    $scope.readScores = function () {
+      dataFactory.getScores("2017", $scope.pssa.school, 
+          "3rd", "PSSA ELA", $scope.pssa.subset)
+        .then(
+          function (response) {
+            $scope.status = 'Retrieved score!';
+            $scope.score = response.data;
+            if ($scope.score.hasOwnProperty('total_tested')) {
+              if ($scope.score.total_tested > 10) {
+                $scope.readPercent = ((parseFloat($scope.score.advanced) + parseFloat($scope.score.proficient)) / parseFloat($scope.score.total_tested) * 100).toFixed(1)
+                $scope.readKids = ($scope.score.advanced + $scope.score.proficient).toFixed(0)
+                $scope.goalKids = ($scope.score.total_tested * 0.8 - ($scope.score.advanced + $scope.score.proficient)).toFixed(0)
+              };
+            };
+          },
+          function (error) {
+            $scope.status = 'Error retrieving score! ' + error.message;
+          })};
+
 }]);
 
 
